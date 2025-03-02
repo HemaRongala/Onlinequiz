@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Quiz System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(226, 237, 241);
+            text-align: center;
+            padding: 20px;
+        }
+        .quiz-container {
+            background:  rgb(153, 178, 185);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+        }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .option {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 2px solid #ccc;
+            width: 200px;
+            text-align: center;
+            font-size: 16px;
+        }
+        .option:hover {
+            background: #d0e8ff;
+        }
+        .selected {
+            background: #4CAF50 !important;
+            color: white;
+            border: 2px solid #4CAF50;
+        }
+        .btn {
+            background: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h2 id="question">Loading...</h2>
+        <div class="options-container" id="options"></div>
+        <button class="btn" onclick="nextQuestion()">Next</button>
+        <h3 id="score" style="display:none;"></h3>
+    </div>
+
+    <script>
+        const questions = [
+        { question: "Who is the Prime Minister of India", options: ["Donald Trumph", "Narendra Modi", "Abdul Kalam", "Manmohan singh"], correct: "Narendra Modi" },
+            { question: "Who is the first person to step on the Moon?", options: ["Kalpna chawla", "Sunitha Williams", "Neil Armstrong", "Rakesh Sharma"], correct: "Neil Armstrong" },
+            { question: "Who wrote 'Hamlet'?", options: ["Shakespeare", "Tolstoy", "Hemingway", "Austen"], correct: "Shakespeare" }
+        ];
+        
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedAnswer = null;
+        
+        function loadQuestion() {
+            const questionElement = document.getElementById("question");
+            const optionsContainer = document.getElementById("options");
+            
+            questionElement.innerText = questions[currentQuestionIndex].question;
+            optionsContainer.innerHTML = "";
+            
+            questions[currentQuestionIndex].options.forEach(option => {
+                const btn = document.createElement("button");
+                btn.innerText = option;
+                btn.classList.add("option");
+                btn.onclick = () => selectAnswer(btn, option);
+                optionsContainer.appendChild(btn);
+            });
+        }
+        
+        function selectAnswer(button, answer) {
+            document.querySelectorAll(".option").forEach(btn => btn.classList.remove("selected"));
+            button.classList.add("selected");
+            selectedAnswer = answer;
+        }
+        
+        function nextQuestion() {
+            if (selectedAnswer === questions[currentQuestionIndex].correct) {
+                score++;
+            }
+            selectedAnswer = null;
+            
+            if (currentQuestionIndex + 1 < questions.length) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                document.getElementById("question").style.display = "none";
+                document.getElementById("options").style.display = "none";
+                document.querySelector(".btn").style.display = "none";
+                document.getElementById("score").innerText = `Your Score: ${score} / ${questions.length}`;
+                document.getElementById("score").style.display = "block";
+            }
+        }
+        
+        window.onload = loadQuestion;
+    </script>
+</body>
+</html>
